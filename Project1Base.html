@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping List Utilities - Bill Splitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<!--To Do: Make new table, make that the table that expands vertically with button press. Make Current table "myTable" expand vertically-->
+<body>
+
+    <style>
+        table, th, td {
+            border:1px solid black;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .itemsTable{
+            margin: 0 auto;
+            margin-top: 20px;
+            width: 50%;
+            
+        } 
+
+        .inTable{
+            border: none;
+        }
+
+        .centeredForm{
+            margin: 0 auto;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .horizontalNavBar{
+            display: block;
+            list-style-type: none;
+            overflow: auto;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0;
+            background-color: lightblue;
+        }
+
+        li a{
+            width: 50%;
+            text-align: center;
+            background-color: lightblue;
+            color: white;
+            padding: 10px 0px;
+            text-decoration: none;
+            float: left;
+        }
+
+        li a:hover {
+            background-color: rgb(17, 138, 138);
+            width: 50%;
+        }
+
+        header{
+            text-align: center;
+            margin-bottom: 0px;
+        }
+
+        p{
+            padding: 0%;
+            overflow: none;
+            margin: 0%;
+        }
+
+        .floatable{
+
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+
+        }
+
+        .trWidth{
+
+            width: 300px;
+
+        } 
+
+        .myContributorsTable{
+
+            overflow-x: auto;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+
+        } 
+
+        .addCostCells{
+
+            margin-left: 35%;
+
+        }
+
+    </style>
+
+<div>
+    <header>
+        <ul class="horizontalNavBar">
+            <li><a href="Project1Base.html">Cost Split Calculator</a> </li>
+            <li><a href="Project1ShoppingList.html">Shopping List</a> </li>
+        </ul>
+    </header>
+</div>
+<div>
+    <form class="centeredForm">
+            <!--Table for People Contributing-->
+            <table id="myContributorsTable">
+
+                <tr class="trWidth">
+
+                    <th>
+                        <input class="inTable floatable" type="text" placeholder="Person Name">
+                        <input class="inTable floatable" type="number" placeholder="0%">
+                    </th>
+                    <th>
+                        <input class="inTable floatable" type="text" placeholder="Person Name">
+                        <input class="inTable floatable" type="number" placeholder="0%">
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <p id="Person1" >Total Owed</p>
+                    </td>
+                    <td>
+                        <p id="Person2" style="float:left">Total Owed</p>
+                        <button id="toBeMoved" type="button" onclick="addNewUser()" style="float:right"> + </button>
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <!--Table for Items to Add-->
+            <table id="myItemsTable" class="itemsTable">
+
+                <tr>
+
+                    <th>
+                        <input id="Cell1" class="inTable" type="number" placeholder="Shopping Item Price" onChange="calculateTotals()">
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="Cell2" class="inTable" type="number" onChange="calculateTotals()">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="Cell3" class="inTable" type="number" onChange="calculateTotals()">
+                    </td>
+                </tr>
+            </table>
+           
+            <div class = "addCostCells" >
+
+                <!--Button to add item-->
+                <button type="button" onclick="addNewRow()"> + </button>
+
+                <!--Input to add multiple rows at once-->
+                <input type="number" value ="1" style="margin-top: 20px;" id="numToAddInput">
+
+                <button type="button" onclick="calculateTotals()"> Test </button>
+
+            </div>
+            
+</form>
+</div>
+<script>
+    var tbodyRef = document.getElementById("myItemsTable").getElementsByTagName("tbody")[0];
+    var tUserBodyRef = document.getElementById("myContributorsTable").getElementsByTagName("tbody")[0];
+    
+    const percentMultiplier = .01;
+    
+    //Adds new row to table
+    function addNewRow(){
+
+        var numToAdd = document.getElementById("numToAddInput").value;
+        for (let i=0; i<numToAdd; i++){
+            let newRow = tbodyRef.insertRow();
+            let newCell = newRow.insertCell();
+            let newInput = document.createElement("input");
+            newInput.setAttribute("type","number");
+            newInput.setAttribute("class","inTable");
+            newInput.setAttribute("onChange","calculateTotals()");
+            newCell.appendChild(newInput);
+        }
+    }
+
+    function addNewUser(){
+
+        let locContributorsTable = document.getElementById("myContributorsTable");
+        let locNumOfContributors = locContributorsTable.rows[0].cells.length;
+
+        if (document.getElementById("newTarget") !== null){
+
+            document.getElementById("newTarget").removeAttribute("id");
+
+        }
+        
+        let newCellLower = tUserBodyRef.rows[1].insertCell();
+        let newTotalOwed = document.createElement("p");
+        let newTargetLoc = document.createElement("p");
+        newTargetLoc.setAttribute("id", "newTarget");
+        newTargetLoc.setAttribute("float", "right");
+        newTotalOwed.innerHTML = "Total Owed";
+        console.log(newTotalOwed);
+        newTotalOwed.setAttribute("class","inTable");
+        newTotalOwed.setAttribute("class","floatable");
+        newTotalOwed.setAttribute("id", "Person" + (locNumOfContributors + 1));
+        newTotalOwed.setAttribute("float","left");
+        newCellLower.appendChild(newTotalOwed);
+        newCellLower.appendChild(newTargetLoc);
+        let newCellUpper = tUserBodyRef.rows[0].insertCell();
+        let newUserName = document.createElement("input");
+        let newContributionPercent = document.createElement("input");
+        newUserName.setAttribute("type", "text");
+        newUserName.setAttribute("class", "inTable");
+        newUserName.setAttribute("placeholder", "Person Name");
+        newContributionPercent.setAttribute("type", "number");
+        newContributionPercent.setAttribute("class", "inTable");
+        newContributionPercent.setAttribute("placeholder", "0%");
+        newCellUpper.appendChild(newUserName);
+        newCellUpper.appendChild(newContributionPercent);
+        var target = document.getElementById("toBeMoved");
+        document.getElementById("newTarget").appendChild(target);
+
+    }
+
+    //Gets the value of a cell from the table and returns it
+    function getCellVal(row){
+
+        var containedVal = 0;
+        var tableWorkingOn = document.getElementById("myItemsTable");
+        var containedVal = tableWorkingOn.rows[row].cells[0].children[0].value;
+        return containedVal;
+    }
+
+    //calculates average of total amount entered into table
+    function calculateTotals(){
+
+        var contributorsTable = document.getElementById("myContributorsTable");
+        var tableWorkingOn = document.getElementById("myItemsTable");
+        var runningTotal = 0;
+
+        for (let i=0; i<tableWorkingOn.rows.length; i++){
+           
+            if(getCellVal(i) !== ""){
+                runningTotal = parseFloat(runningTotal) + parseFloat(getCellVal(i));
+            }
+            
+        }   
+
+        var evenTotal = runningTotal
+        var numOfContributors = contributorsTable.rows[0].cells.length;
+        
+        for (let j=0; j<numOfContributors; j++){
+
+            var tempCellValue = contributorsTable.rows[0].cells[j].children[1].value;
+            var individualTotal = tempCellValue * percentMultiplier * evenTotal;
+            var tempKeepTrackOfName = "Person" + (j+1);
+            console.log(tempKeepTrackOfName);
+            document.getElementById(tempKeepTrackOfName).innerHTML = individualTotal;
+
+        }
+
+    }
+        
+</script>
+</body>
+</html>

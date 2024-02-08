@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping List Utilities - Shopping List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <style>
+
+    .horizontalNavBar{
+            display: block;
+            list-style-type: none;
+            overflow: auto;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0;
+            background-color: lightblue;
+            }
+
+        li a{
+            width: 50%;
+            text-align: center;
+            background-color: lightblue;
+            color: white;
+            padding: 10px 0px;
+            text-decoration: none;
+            float: left;
+        }
+
+        li a:hover {
+            background-color: rgb(17, 138, 138);
+            width: 50%;
+        }
+
+        header{
+            text-align: center;
+            margin-bottom: 0px;
+        }
+
+        ul{
+           list-style-type: none; 
+        }
+
+        input [type=checkbox]{
+            width: 50px;
+            height: 50px;
+        }
+
+        input[type=text]{
+            padding: none;
+            margin-left: 33%;
+        }
+
+        h1{
+        
+            margin-left: 35%;
+            
+        }
+
+        .addCostCells{
+            margin-left: 33%
+        }
+
+    </style>
+
+    <div>
+        <header>
+            <ul class="horizontalNavBar">
+                <li><a href="Project1Base.html">Cost Split Calculator</a> </li>
+                <li><a href="Project1ShoppingList.html">Shopping List</a> </li>
+            </ul>
+        </header>
+    </div>
+
+    <h1> Shopping List </h1>
+
+    <div>
+
+        <ul id="itemsList">
+            <li> <input type="text"> <input type="checkbox"> </li>
+        </ul>
+
+    <div class="addCostCells">
+    
+        <!--Button to add item-->
+        <button type="button" onclick="addNewRow()"> + </button>
+    
+        <!--Input to add multiple rows at once-->
+        <input type="number" value="1" style="margin-top: 20px;" id="numToAddInput">
+    
+        <button type="button" onclick="removeRow()"> - </button>
+    
+    </div>
+
+    </div>
+
+    <script>
+
+        function addNewRow(){
+
+            let numToAdd = document.getElementById("numToAddInput").value;
+            let listToAddTo = document.getElementById("itemsList");
+
+            for(let i=0; i<numToAdd; i++){
+
+                let tempLi = document.createElement("li");
+                let tempInputEntry = document.createElement("input");
+                let tempCheckbox = document.createElement("input")
+                tempInputEntry.setAttribute("type", "text");
+                tempCheckbox.setAttribute("type", "checkbox");
+                tempLi.appendChild(tempInputEntry);
+                tempLi.appendChild(tempCheckbox);
+                listToAddTo.appendChild(tempLi);
+
+            }
+
+        }
+
+        function removeRow(){
+
+            let numToRemove = document.getElementById("numToAddInput").value;
+            let listToRemoveFrom = document.getElementById("itemsList");
+
+            if (listToRemoveFrom.getElementsByTagName("li").length > numToRemove){
+                for (let i=0; i<numToRemove; i++){
+                listToRemoveFrom.removeChild(listToRemoveFrom.lastElementChild);
+                }
+            }
+            
+
+        }
+    </script>
+</body>
