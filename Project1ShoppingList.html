@@ -10,58 +10,122 @@
     <style>
 
     .horizontalNavBar{
-            display: block;
-            list-style-type: none;
-            overflow: auto;
-            margin: 0 auto;
-            width: 100%;
-            padding: 0;
-            background-color: lightblue;
-            }
+        display: block;
+        list-style-type: none;
+        overflow: auto;
+        margin: 0 auto;
+        width: 100%;
+        padding: 0;
+        background-color: lightblue;
+    }
 
-        li a{
-            width: 50%;
-            text-align: center;
-            background-color: lightblue;
-            color: white;
-            padding: 10px 0px;
-            text-decoration: none;
-            float: left;
-        }
+    .selectStore{
+        display: block;
+        list-style-type: none;
+        overflow: auto;
+        margin: 0 auto;
+        width: 50%;
+        padding: 0;
+        background-color: lightblue;
+        border-radius: 25px;
+    }
 
-        li a:hover {
-            background-color: rgb(17, 138, 138);
-            width: 50%;
-        }
+    .horizontalNavBar li a{
+        width: 50%;
+        text-align: center;
+        background-color: rgb(173, 230, 216);
+        color: white;
+        padding: 10px 0px;
+        text-decoration: none;
+        float: left;
+    }
 
-        header{
-            text-align: center;
-            margin-bottom: 0px;
-        }
+    .selectStore li a{
+        width: 50%;
+        text-align: center;
+        background-color: rgb(26, 86, 252);
+        color: white;
+        padding: 10px 0px;
+        text-decoration: none;
+        float: left;
+    }
 
-        ul{
-           list-style-type: none; 
-        }
+    .horizontalNavBar li a:hover {
+        background-color: rgb(17, 138, 138);
+        width: 50%;
+    }
 
-        input [type=checkbox]{
-            width: 50px;
-            height: 50px;
-        }
+    .selectStore li a:hover{
+        background-color: rgb(185, 198, 255);
+        width: 50%;
+    }
 
-        input[type=text]{
-            padding: none;
-            margin-left: 33%;
-        }
+    li p{
+        height: 100%;
+        width: 100%;
+        position:relative;  
+        left: -20px; 
+        top: 10px; 
+        margin-top: -5px;
+        margin-left: -5px;
+        margin-right: -5px;
+        pointer-events: none;
+    }
 
-        h1{
+    .QB{
+        width: 12%;
+        margin-left: 5px;
+    }
+
+    header{
+        text-align: center;
+        margin-bottom: 0px;
+    }
+
+    ul{
+        list-style-type: none; 
+    }
+
+    input [type=checkbox]{
+        width: 50px;
+        height: 50px;
+    }
+
+    input[type=text]{
+        padding: none;
+        /*margin-left: 33%;*/
+    }
+
+    h1{
+    
+        margin-left: 35%;
         
-            margin-left: 35%;
-            
-        }
+    }
 
-        .addCostCells{
-            margin-left: 33%
-        }
+    .addCostCells{
+        /* margin-left: 33% */
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .listEntry{
+        /* margin-left: 25%; */
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #storeNameInput{
+        /* background-color: linear-gradient(
+            to right,
+            red 0%,
+            red 50%,
+            green 50%
+            green 100%
+        ); */
+        background: linear-gradient(90deg, rgba(0, 255, 0, 0.3) 0%, rgba(255,0,0,0.3)0%);
+    }
 
     </style>
 
@@ -76,10 +140,23 @@
 
     <h1> Shopping List </h1>
 
+    <div style="display: flex; align-items: center; position: relative;">
+
+        <ul class="selectStore" id="s0">
+            <div style="display:flex; flex-direction: column; align-items: center;">
+                <input type="text" placeholder="STORE NAME" style=" margin:10px auto; width: 50%; text-align: center;" onchange="updateStoreName()" id="storeNameInput"> <div>  </div></input>
+            </div>
+            <li class="storeListEntry" id="li0"><a onclick="setCurrentStoreBeingViewed(this)">Store1</a> </li>
+
+        </ul>
+    <div style="position: absolute; margin: 0px 76%;">
+        <button onclick="addStore()">+</button>
+    </div>
+    </div>
+
     <div>
 
         <ul id="itemsList">
-            <li> <input type="text"> <input type="checkbox"> </li>
         </ul>
 
     <div class="addCostCells">
@@ -88,7 +165,7 @@
         <button type="button" onclick="addNewRow()"> + </button>
     
         <!--Input to add multiple rows at once-->
-        <input type="number" value="1" style="margin-top: 20px;" id="numToAddInput">
+        <input type="number" value="1" id="numToAddInput">
     
         <button type="button" onclick="removeRow()"> - </button>
     
@@ -97,6 +174,13 @@
     </div>
 
     <script>
+        const checkboxChildNum = 3;
+        let savedStoreDataTables = [];
+        let savedUserData = [];
+
+        window.onload = function() {
+            addNewRow();
+        }
 
         function addNewRow(){
 
@@ -105,13 +189,28 @@
 
             for(let i=0; i<numToAdd; i++){
 
+                let tempListLength = listToAddTo.getElementsByTagName("li").length + 1;
                 let tempLi = document.createElement("li");
                 let tempInputEntry = document.createElement("input");
-                let tempCheckbox = document.createElement("input")
+                let tempCheckbox = document.createElement("input");
+                let tempQuantityBox = document.createElement("input");
+                let tempCollectedCheckBox = document.createElement("input");
+                tempLi.setAttribute("id", tempListLength);
+                tempLi.setAttribute("class", "listEntry");
                 tempInputEntry.setAttribute("type", "text");
+                tempInputEntry.setAttribute("placeholder", "Item Name")
+                tempInputEntry.setAttribute("style", "background: rgba(255,0,0,0.3)");
                 tempCheckbox.setAttribute("type", "checkbox");
+                tempQuantityBox.setAttribute("type", "text");
+                tempQuantityBox.setAttribute("placeholder", "Quantity");
+                tempQuantityBox.setAttribute("class", "QB");
+                tempCollectedCheckBox.setAttribute("type", "checkbox");
+                tempCollectedCheckBox.setAttribute("onClick", "itemPickedUpBoxChanged(this)")
+                tempLi.appendChild(tempCollectedCheckBox);
                 tempLi.appendChild(tempInputEntry);
+                tempLi.appendChild(tempQuantityBox);
                 tempLi.appendChild(tempCheckbox);
+                tempCheckbox.setAttribute("onClick", "checkboxChange(this)");
                 listToAddTo.appendChild(tempLi);
 
             }
@@ -129,7 +228,183 @@
                 }
             }
             
+        }
 
+        function checkboxChange(boxClicked){
+
+            if (boxClicked !== "undefined"){
+
+                if (boxClicked.checked){
+                    bumpEntryUp(boxClicked);
+                }
+                else{
+                    lowerEntry(boxClicked);
+                }
+           
+        }
+        }
+
+        function itemPickedUpBoxChanged(boxClicked){
+            if (boxClicked !== "undefined"){
+
+                if (boxClicked.checked){
+                    setColorOfInputBox(boxClicked, "rgba(0,255,0,0.3)");
+                    sendToBottomOfList(boxClicked);
+                }
+                else{
+                    setColorOfInputBox(boxClicked, "rgba(255,0,0,0.3)");
+                    backToNotCollected(boxClicked);
+                }
+        }
+        }
+
+        function setColorOfInputBox(box, color){
+            let parentElem = box.parentNode;
+            parentElem.children[1].setAttribute("style", "background:" + color);
+            updateStoreNameProgressVisual();
+        }
+
+        function updateStoreNameProgressVisual(){
+            let progressBar = document.getElementById("storeNameInput");
+            let numOfChecks = 0;
+            let percentComplete = 0;
+            let itemsListRef = document.getElementById("itemsList");
+            for (i=0; i<itemsListRef.children.length; i++){
+                if (itemsListRef.children[i].children[0].checked){
+                    numOfChecks++;
+                }
+            }
+            percentComplete = (numOfChecks/itemsListRef.children.length)*100;
+            progressBar.setAttribute("style", "background:linear-gradient(90deg, rgba(0, 255, 0, 0.3)" + percentComplete + "%, rgba(255,0,0,0.3)0%)");
+        }
+
+        function bumpEntryUp(currentBox){
+
+            let amountToMove = currentBox.parentElement.id - 1;
+            console.log(amountToMove);
+
+            for (let i=amountToMove; i > 0; i--){
+
+            let elementToMoveId = currentBox.parentElement.id;
+            let elementToMove = currentBox.parentElement;
+            let aboveElement = document.getElementById(elementToMoveId - 1);
+            let aboveElementId = elementToMoveId - 1;
+            let tempId = elementToMoveId;
+            elementToMove.id = aboveElementId;
+            if (aboveElement != null){
+                aboveElement.setAttribute("id", tempId);
+                elementToMove.parentNode.insertBefore(elementToMove, aboveElement);
+            }
+            
+            }
+           
+
+        }
+
+        function clearTable(){
+            document.getElementById("itemsList").innerHTML = "";
+            addNewRow();
+        }
+
+        function lowerEntry(currentBox){
+
+            let elementToMove = currentBox.parentElement;
+            let currentElementId = parseFloat(currentBox.parentElement.id);
+            let listRef = elementToMove.parentNode;
+            for (let i = 1; i < listRef.getElementsByTagName("li").length; i++){
+                if(document.getElementById(currentElementId + i) == null){
+                    listRef.appendChild(elementToMove);
+                }
+                else if(document.getElementById(currentElementId + i).children[checkboxChildNum].checked == false){
+                    let firstUncheckedId = currentElementId + i;
+                    let belowElement = document.getElementById(firstUncheckedId);
+                    listRef.insertBefore(elementToMove, belowElement);
+                    break;
+                }
+            }
+        }
+
+        function setCurrentStoreBeingViewed(nodeCallingFunc){
+            let tableToChangeToId = nodeCallingFunc.parentElement.id;
+            let idValofTableToChangeTo = parseFloat(tableToChangeToId.slice(-1));
+            let CurrentlyDisplayedTable = document.getElementsByClassName("selectStore");
+            let idValOfCurrentlyDisplayedTable = parseFloat(CurrentlyDisplayedTable[0].id.slice(-1));
+            let itemsListRef = document.getElementById("itemsList");
+            let tempListEntryCount = itemsListRef.children.length;
+            
+            if (idValOfCurrentlyDisplayedTable != idValofTableToChangeTo){
+                savedStoreDataTables[idValOfCurrentlyDisplayedTable] = document.getElementById("itemsList").innerHTML;  
+                
+                savedUserData[idValOfCurrentlyDisplayedTable] = [];
+                for (let i = 0; i < tempListEntryCount; i++){
+                    savedUserData[idValOfCurrentlyDisplayedTable].push([
+                        itemsListRef.children[i].children[0].checked, 
+                        itemsListRef.children[i].children[1].value, 
+                        itemsListRef.children[i].children[2].value,
+                        itemsListRef.children[i].children[3].checked
+                    ]);
+                }
+                
+                if(savedStoreDataTables[idValofTableToChangeTo] != undefined){
+                    document.getElementById("itemsList").innerHTML = savedStoreDataTables[idValofTableToChangeTo];
+                    CurrentlyDisplayedTable[0].id = "s" + idValofTableToChangeTo;
+                }else{
+                    clearTable();
+                    CurrentlyDisplayedTable[0].id = "s" + idValofTableToChangeTo;
+                }
+            }
+
+            document.getElementById("storeNameInput").value = nodeCallingFunc.innerHTML;
+            tempListEntryCount = itemsListRef.children.length;
+            for (let i = 0; i < tempListEntryCount; i++){
+                fillInItemInfo(i, savedUserData[idValofTableToChangeTo][i]);
+            }
+
+            updateStoreNameProgressVisual();
+        }
+
+        function updateStoreName(){
+            let StoreInputBarRef = document.getElementById("storeNameInput");
+            let CurrentlyDisplayedTable = document.getElementsByClassName("selectStore");
+            let idValOfCurrentlyDisplayedTable = parseFloat(CurrentlyDisplayedTable[0].id.slice(-1));
+            let buttonWithNameToChange = document.getElementById("li" + idValOfCurrentlyDisplayedTable);
+            buttonWithNameToChange.children[0].innerHTML = StoreInputBarRef.value;
+        }
+
+        function fillInItemInfo(entryId, info){
+            let tableRef = document.getElementById("itemsList");
+            tableRef.children[entryId].children[0].checked = info[0];
+            tableRef.children[entryId].children[1].value = info[1];
+            tableRef.children[entryId].children[2].value = info[2];
+            tableRef.children[entryId].children[3].checked = info[3];
+        }
+
+        function addStore(){
+            let storeList = document.getElementsByClassName("selectStore")[0];
+            let tempLi = document.createElement("li");
+            let tempA = document.createElement("a");
+            let tempId = "li" + (storeList.children.length-1);
+            tempLi.class = "storeListEntry";
+            tempLi.setAttribute("id", tempId);
+            tempA.setAttribute("onClick", "setCurrentStoreBeingViewed(this)");
+            tempA.innerHTML = "New Store";
+            tempLi.appendChild(tempA);
+            storeList.appendChild(tempLi);
+        }
+
+        function sendToBottomOfList(currentBox){
+            let elementToMove = currentBox.parentElement;
+            let listRef = elementToMove.parentNode;    
+            listRef.appendChild(elementToMove);
+            //TO DO: make sure item at bottom of list updates ID, as well as all other list entries above it get -1 applied to their ID's
+        }
+
+        function backToNotCollected(currentBox){
+            let elementToMove = currentBox.parentElement;
+            let listRef = elementToMove.parentNode;
+            if(elementToMove.children[3].checked == true){
+                bumpEntryUp(elementToMove.children[3]);
+            }
         }
     </script>
 </body>
