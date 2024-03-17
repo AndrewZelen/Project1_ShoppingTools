@@ -281,7 +281,6 @@
         function bumpEntryUp(currentBox){
 
             if(currentBox.parentElement.id !=0){
-                console.log(currentBox.parentElement.id);
                 let amountToMove = currentBox.parentElement.id - 1;
                 let lineBeingMoved = currentBox.parentElement;
 
@@ -398,7 +397,6 @@
                 while(document.getElementById(elementToMoveId-1).children[3].checked == false){
                     swapEntryUp(elementToMove);
                     elementToMoveId = parseInt(elementToMove.id);
-                    console.log("looped");
                 }
             }
         }
