@@ -280,22 +280,16 @@
 
         function bumpEntryUp(currentBox){
 
-            let amountToMove = currentBox.parentElement.id - 1;
-            console.log(amountToMove);
+            if(currentBox.parentElement.id !=0){
+                console.log(currentBox.parentElement.id);
+                let amountToMove = currentBox.parentElement.id - 1;
+                let lineBeingMoved = currentBox.parentElement;
 
-            for (let i=amountToMove; i > 0; i--){
+                for (let i=amountToMove; i > 0; i--){
 
-            let elementToMoveId = currentBox.parentElement.id;
-            let elementToMove = currentBox.parentElement;
-            let aboveElement = document.getElementById(elementToMoveId - 1);
-            let aboveElementId = elementToMoveId - 1;
-            let tempId = elementToMoveId;
-            elementToMove.id = aboveElementId;
-            if (aboveElement != null){
-                aboveElement.setAttribute("id", tempId);
-                elementToMove.parentNode.insertBefore(elementToMove, aboveElement);
-            }
-            
+                    swapEntryUp(lineBeingMoved);
+                
+                }
             }
            
 
@@ -312,15 +306,9 @@
             let currentElementId = parseFloat(currentBox.parentElement.id);
             let listRef = elementToMove.parentNode;
             for (let i = 1; i < listRef.getElementsByTagName("li").length; i++){
-                if(document.getElementById(currentElementId + i) == null){
-                    listRef.appendChild(elementToMove);
-                }
-                else if(document.getElementById(currentElementId + i).children[checkboxChildNum].checked == false){
-                    let firstUncheckedId = currentElementId + i;
-                    let belowElement = document.getElementById(firstUncheckedId);
-                    listRef.insertBefore(elementToMove, belowElement);
-                    break;
-                }
+                
+                swapEntryDown(elementToMove);
+                
             }
         }
 
@@ -401,9 +389,43 @@
 
         function backToNotCollected(currentBox){
             let elementToMove = currentBox.parentElement;
+            let elementToMoveId = parseInt(elementToMove.id);
             let listRef = elementToMove.parentNode;
             if(elementToMove.children[3].checked == true){
                 bumpEntryUp(elementToMove.children[3]);
+            }
+            else{
+                while(document.getElementById(elementToMoveId-1).children[3].checked == false){
+                    swapEntryUp(elementToMove);
+                    elementToMoveId = parseInt(elementToMove.id);
+                    console.log("looped");
+                }
+            }
+        }
+
+        function swapEntryUp(entryToMove){
+            let elementToMoveId = entryToMove.id;
+            let elementToMove = entryToMove;
+            let aboveElement = document.getElementById(elementToMoveId - 1);
+        if (aboveElement != null){
+            let aboveElementId = elementToMoveId - 1;
+            let tempId = elementToMoveId;
+            elementToMove.id = aboveElementId;
+            aboveElement.setAttribute("id", tempId);
+            elementToMove.parentNode.insertBefore(elementToMove, aboveElement);
+            }
+        }
+
+        function swapEntryDown(entryToMove){
+            let elementToMoveId = parseInt(entryToMove.id);
+            let elementToMove = entryToMove;
+            let belowElement = document.getElementById(elementToMoveId + 1);
+        if (belowElement != null){
+            let belowElementId = elementToMoveId + 1;
+            let tempId = elementToMoveId;
+            elementToMove.id = belowElementId;
+            belowElement.setAttribute("id", tempId);
+            elementToMove.parentNode.insertBefore(elementToMove, belowElement);
             }
         }
     </script>
